@@ -2,27 +2,59 @@ from ftplib import FTP
 import time
 import platform
 import os
+import json
 
-
-if platform.system == 'Windows':
+if platform.system() == 'Windows':
     clear = 'cls'
 else:
     clear = 'clear'
 
 print("欢迎使用 Fyderlantaro | Powered by FriendShip Studio")
 print("[C] FriendShip Studio 2021     All rights reserved.")
-server_address = input("请输入FTP服务器地址:\n")
-
-ctrl = True
-while ctrl == True:
+config_path = os.path.join((os.path.dirname(os.path.abspath(__file__)) + os.path.sep),"config.json")
+if os.path.exists(config_path):
+    print("============================================================")
+    print("[INFO] 检测到目录下的config.json，读取...",end="")
+    f_config = open(config_path)
+    print("完成")
+    print("[INFO] 加载配置...",end="")
     try:
-        server_port = int(input("请输入服务器的端口:\n"))
-        ctrl = False
-    except TypeError:
-        print("错误的端口数据，请重新输入")
+        config = json.load(f_config)
+        server_address = config['server_address']
+        server_port = config['server_port']
+        username = config['username']
+        password = config['password']
+        f_config.close()
+    except Exception as e:
+        f_config.close()
+        skip_input = False
+        print("失败")
+        os.remove(config_path)
+        print("[INFO] 请重启程序，重新登录")
+        print("============================================================")
+        time.sleep(3.0)
+        exit(0)
+    if all([server_address,server_port,username,password]):
+        print("成功")
+        print("============================================================")
+        skip_input = True
+    else:
+        skip_input = False
+else:
+    skip_input = False
+if skip_input == False:
+    server_address = input("请输入FTP服务器地址:\n")
 
-username = input("请输入服务器登录用户名:\n")
-password = input("请输入服务器登录密码:\n")
+    ctrl = True
+    while ctrl == True:
+        try:
+            server_port = int(input("请输入服务器的端口:\n"))
+            ctrl = False
+        except TypeError:
+            print("错误的端口数据，请重新输入")
+
+    username = input("请输入服务器登录用户名:\n")
+    password = input("请输入服务器登录密码:\n")
 
 ftp = FTP()
 ftp.set_debuglevel(0)
@@ -48,6 +80,16 @@ except:
 
 print("============================================================")
 print("[INFO] 成功与服务器建立连接")
+print("[INFO] 储存登录凭据...",end="")
+with open(config_path,'w') as f:
+    config = {
+            'server_address': server_address,
+            'server_port': server_port,
+            'username': username,
+            'password': password,
+            }
+    json.dump(config,f)
+print("完成")
 print("============================================================")
 time.sleep(1.0)
 ftp.encoding = 'utf-8'
@@ -67,7 +109,7 @@ while ctrl == True:
             print(f"在 {ftp.pwd()} 下没有文件")
 
         print(f"在 {ftp.pwd()} 有以下文件:")
-        for file in ftp.nlst().sorted():
+        for file in ftp.nlst():
             print(file)
     elif branch == 'help':
         os.system(clear)
