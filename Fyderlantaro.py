@@ -24,6 +24,7 @@ if os.path.exists(config_path):
         server_port = config['server_port']
         username = config['username']
         password = config['password']
+        f_config.close()
     except Exception as e:
         f_config.close()
         skip_input = False
@@ -31,7 +32,8 @@ if os.path.exists(config_path):
         os.remove(config_path)
         print("[INFO] 请重启程序，重新登录")
         print("============================================================")
-    f_config.close()
+        time.sleep(3.0)
+        exit(0)
     if all([server_address,server_port,username,password]):
         print("成功")
         print("============================================================")
@@ -115,7 +117,7 @@ while ctrl == True:
     elif branch == 'quit':
         os.system(clear)
         print("感谢使用Fyderlantaro | 欢迎访问 https://github.com/FriendShip-Code-Studio")
-        time.sleep(1)
+        time.sleep(3)
         exit(0)
     elif branch.startswith("cd "):
         ch_dir = branch[3:]
