@@ -4,7 +4,7 @@ import platform
 import os
 
 
-if platform.system == 'Windows':
+if platform.system() == 'Windows':
     clear = 'cls'
 else:
     clear = 'clear'
@@ -67,7 +67,7 @@ while ctrl == True:
             print(f"在 {ftp.pwd()} 下没有文件")
 
         print(f"在 {ftp.pwd()} 有以下文件:")
-        for file in ftp.nlst().sorted():
+        for file in ftp.nlst():
             print(file)
     elif branch == 'help':
         os.system(clear)
