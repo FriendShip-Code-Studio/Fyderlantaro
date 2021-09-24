@@ -67,7 +67,7 @@ while ctrl == True:
             print(f"在 {ftp.pwd()} 下没有文件")
 
         print(f"在 {ftp.pwd()} 有以下文件:")
-        for file in ftp.nlst():
+        for file in ftp.nlst().sorted():
             print(file)
     elif branch == 'help':
         os.system(clear)
