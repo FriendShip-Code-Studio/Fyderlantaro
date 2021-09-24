@@ -9,41 +9,6 @@ if platform.system == 'Windows':
 else:
     clear = 'clear'
 
-
-def downloader(add: str, port: int, account: str, password: str):
-    ftp = FTP()
-    ftp.set_debuglevel(0)
-
-    try:
-        ftp.connect(add, port)
-        ftp.login(account, password)
-    except OSError:
-        print("ERROR======================================================")
-        print("[WARN] 无法连接至服务器")
-        print("ERROR=======================================================")
-        return False
-    except TimeoutError:
-        print("ERROR======================================================")
-        print("[WARN]] 服务器响应超时")
-        print("ERROR=======================================================")
-        return False
-    print("============================================================")
-    print("[INFO] 成功与服务器建立连接，传输开始...")
-    print("============================================================")
-    time.sleep(1.0)
-    ftp.encoding = 'utf-8'
-
-    files = ftp.nlst()
-    for file in files:
-        print(f"[INFO] 正在获取 {file} ...")
-        f = open(file, 'wb')
-        ftp.retrbinary(f"RETR {file}", f.write)
-
-    f.close()
-    ftp.quit()
-    return True
-
-
 print("欢迎使用 Fyderlantaro | Powered by FriendShip Studio")
 print("[C] FriendShip Studio 2021     All rights reserved.")
 server_address = input("请输入FTP服务器地址:\n")
